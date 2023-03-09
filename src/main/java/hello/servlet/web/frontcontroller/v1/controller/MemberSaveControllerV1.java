@@ -9,20 +9,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
-public class MemberListControllerv1 implements ControllerV1 {
+public class MemberSaveControllerV1 implements ControllerV1 {
 
     private MemberRepository memberRepository = MemberRepository.getInstance();
-
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Member> members = memberRepository.findAll();
-        request.setAttribute("members", members);
+        String username = request.getParameter("username");
+        int age = Integer.parseInt(request.getParameter("age"));
 
-        String viewPath = "/WEB-INF/views/members.jsp";
+        Member member = new Member(username, age);
+        memberRepository.save(member);
+
+        //Model에 데이터를 보관
+        request.setAttribute("member", member);
+
+        String viewPath = "/WEB-INF/views/save-result.jsp";
         RequestDispatcher dispatcher = request.getRequestDispatcher(viewPath);
         dispatcher.forward(request, response);
-
     }
 }
